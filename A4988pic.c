@@ -1,4 +1,4 @@
-#ifndef A4988pic_c                      //prevent from problems created by including 2 times the library
+#ifndef A4988pic_c //prevent from problems created by including 2 times the library
 #define A4988pic_c
 
 #include "mcc_generated_files/mcc.h"
@@ -13,6 +13,7 @@
 #endif
 
 int steprev=200;
+static bool lastDIR;
 
 void us_delay(unsigned long us){    //delay using a variable
     for(us=us;us>0;us--){           //for cycle for the selected lenght
@@ -77,20 +78,28 @@ void step_go(unsigned long speed, char d){              //run the motor setting 
             DIR = 0;                                    //setting direction pin to right
             break;
     }
+    if(lastDIR!=DIR){
+        __delay_ms(1);
+    }
     
     if(speed!=0){                                       //checking if speed isn't 0
         unsigned long delay;                
-        delay=4294967296-((speed*4294967295)/100); //putting speed value in proportion
-        STEP=1;                                         //setting step pin HIGH
+        delay=4294967296-((speed*4294967295)/100);      //putting speed value in proportion
+        if (delay<125){
+            delay=125;
+        }
+        STEP=1;                                     //setting step pin HIGH
         us_delay(delay);                                
-        STEP=0;                                         //setting step pin LOW
+        STEP=0;                                     //setting step pin LOW
         us_delay(delay);
+        
     }
+    lastDIR=DIR;
 }
 
 void step_go_num(unsigned long speed, char d, int numstep){ //run the motor setting speed, direction and revolution numbers
     
-    static int cyclenum = 0;
+    int cyclenum = 0;
     
     switch(d){                                              //switch contruct
         case 's':                                           //left cases (ita & eng)
@@ -106,36 +115,33 @@ void step_go_num(unsigned long speed, char d, int numstep){ //run the motor sett
             DIR = 0;                                        //setting direction pin to right
             break;
     }
+    if(lastDIR!=DIR){
+        __delay_ms(1);
+    }
     
     if(speed!=0){
         unsigned long delay;
         delay=4294967296-((speed*4294967295)/100);          //putting speed value in proportion
         for(numstep=numstep;numstep>0;numstep--){
+            cyclenum++;
             if(delay<715&&cyclenum<=15){                 
                 STEP=1;                                     //setting step pin HIGH
                 us_delay(715);                                
                 STEP=0;                                     //setting step pin LOW
                 us_delay(715);
             }else if (delay<125){
-                STEP=1;                                     //setting step pin HIGH
-                us_delay(125);                                
-                STEP=0;                                     //setting step pin LOW
-                us_delay(125);
-            }else{
-                STEP=1;                                     //setting step pin HIGH
-                us_delay(delay);                                
-                STEP=0;                                     //setting step pin LOW
-                us_delay(delay);
-                cyclenum++;
+                delay=125;
             }
+            STEP=1;                                     //setting step pin HIGH
+            us_delay(delay);                                
+            STEP=0;                                     //setting step pin LOW
+            us_delay(delay); 
         }
     }
-
 }
 
 void step_go_adcspeed(char d, int numstep){             //run the motor setting the speed using an external analog input
-    
-    static int cyclenum = 0;
+    int cyclenum = 0;
     
     switch(d){                                          //switch contruct
         case 's':                                       //left cases (ita & eng)
@@ -156,30 +162,28 @@ void step_go_adcspeed(char d, int numstep){             //run the motor setting 
         unsigned long delay;
         for(numstep=numstep;numstep>0;numstep--){
             delay=4294967296-((ADCON0*4294967295)/256); //putting speed value in proportion
+            cyclenum++;
             if(delay<715&&cyclenum<=15){                 
-                STEP=1;                                 //setting step pin HIGH
+                STEP=1;                                     //setting step pin HIGH
                 us_delay(715);                                
-                STEP=0;                                 //setting step pin LOW
+                STEP=0;                                     //setting step pin LOW
                 us_delay(715);
             }else if (delay<125){
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(125);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(125);
-            }else{
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(delay);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(delay);
-                cyclenum++;
+                delay=125;
+            }
+            STEP=1;                                     //setting step pin HIGH
+            us_delay(delay);                                
+            STEP=0;                                     //setting step pin LOW
+            us_delay(delay);
             }
         }
-    }
+    
+lastDIR=DIR;
 }
 
 void step_one_rev(unsigned long speed, char d){         //make the motor do a revolution, you can decide speed and direction
     
-    static int cyclenum = 0;
+   int cyclenum = 0;
     
    switch(d){                                           //switch contruct
         case 's':                                       //left cases (ita & eng)
@@ -194,37 +198,36 @@ void step_one_rev(unsigned long speed, char d){         //make the motor do a re
         case 'R': 
             DIR = 0;                                    //setting direction pin to right
             break;
+    }
+    if(lastDIR!=DIR){
+        __delay_ms(1);
     }
     
     if(speed!=0){
         unsigned long delay;
         delay=4294967296-((speed*4294967295)/100);      //putting speed value in proportion
         for(int numstep=steprev;numstep>0;numstep--){
+            cyclenum++;
             if(delay<715&&cyclenum<=15){                 
-                STEP=1;                                 //setting step pin HIGH
+                STEP=1;                                     //setting step pin HIGH
                 us_delay(715);                                
-                STEP=0;                                 //setting step pin LOW
+                STEP=0;                                     //setting step pin LOW
                 us_delay(715);
             }else if (delay<125){
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(125);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(125);
-            }else{
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(delay);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(delay);
-                cyclenum++;
+                delay=125;
+            }
+            STEP=1;                                     //setting step pin HIGH
+            us_delay(delay);                                
+            STEP=0;                                     //setting step pin LOW
+            us_delay(delay);
             }
         }
+   lastDIR=DIR;
     }
-
-}
 
 void step_half_rev(unsigned long speed, char d){        //make the motor do an half revolution, you can decide speed and direction
     
-    static int cyclenum = 0;
+   int cyclenum = 0;
     
    switch(d){                                           //switch contruct
         case 's':                                       //left cases (ita & eng)
@@ -240,36 +243,35 @@ void step_half_rev(unsigned long speed, char d){        //make the motor do an h
             DIR = 0;                                    //setting direction pin to right
             break;
     }
+    if(lastDIR!=DIR){
+        __delay_ms(1);
+    }
     
     if(speed!=0){
         unsigned long delay;
         delay=4294967296-((speed*4294967295)/100);      //putting speed value in proportion
         for(int numstep=steprev/2;numstep>0;numstep--){
+            cyclenum++;
             if(delay<715&&cyclenum<=15){                 
-                STEP=1;                                 //setting step pin HIGH
+                STEP=1;                                     //setting step pin HIGH
                 us_delay(715);                                
-                STEP=0;                                 //setting step pin LOW
+                STEP=0;                                     //setting step pin LOW
                 us_delay(715);
             }else if (delay<125){
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(125);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(125);
-            }else{
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(delay);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(delay);
-                cyclenum++;
+                delay=125;
+            }
+            STEP=1;                                     //setting step pin HIGH
+            us_delay(delay);                                
+            STEP=0;                                     //setting step pin LOW
+            us_delay(delay);
             }
         }
+   lastDIR=DIR;
     }
-
-}
 
 void step_quarter_rev(unsigned long speed, char d){     //make the motor do a quarter of revolution, you can decide speed and direction
     
-    static int cyclenum = 0;
+    int cyclenum = 0;
     
     switch(d){                                          //switch contruct
         case 's':                                       //left cases (ita & eng)
@@ -285,36 +287,35 @@ void step_quarter_rev(unsigned long speed, char d){     //make the motor do a qu
             DIR = 0;                                    //setting direction pin to right
             break;
     }
+    if(lastDIR!=DIR){
+        __delay_ms(1);
+    }
     
     if(speed!=0){
         unsigned long delay;
         delay=4294967296-((speed*4294967295)/100);      //putting speed value in proportion
         for(int numstep=steprev/4;numstep>0;numstep--){
+            cyclenum++;
             if(delay<715&&cyclenum<=15){                 
-                STEP=1;                                 //setting step pin HIGH
+                STEP=1;                                     //setting step pin HIGH
                 us_delay(715);                                
-                STEP=0;                                 //setting step pin LOW
+                STEP=0;                                     //setting step pin LOW
                 us_delay(715);
             }else if (delay<125){
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(125);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(125);
-            }else{
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(delay);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(delay);
-                cyclenum++;
+                delay=125;
+            }
+            STEP=1;                                     //setting step pin HIGH
+            us_delay(delay);                                
+            STEP=0;                                     //setting step pin LOW
+            us_delay(delay);
             }
         }
+    lastDIR=DIR;
     }
-
-}
 
 void step_n_rev(unsigned long speed, char d, int numrev){   //make the motor do a noumber of completes revolution, you can decide speed, number and direction
     
-    static int cyclenum = 0;
+    int cyclenum = 0;
     
     switch(d){                                              //switch contruct
         case 's':                                           //left cases (ita & eng)
@@ -330,36 +331,34 @@ void step_n_rev(unsigned long speed, char d, int numrev){   //make the motor do 
             DIR = 0;                                        //setting direction pin to right
             break;
     }
+    if(lastDIR!=DIR){
+        __delay_ms(1);
+    }
     
     if(speed!=0){
         unsigned long delay;
         delay=4294967296-((speed*4294967295)/100);          //putting speed value in proportion
         for(int numstep=numrev*steprev;numstep>0;numstep--){
+            cyclenum++;
             if(delay<715&&cyclenum<=15){                 
                 STEP=1;                                     //setting step pin HIGH
                 us_delay(715);                                
                 STEP=0;                                     //setting step pin LOW
                 us_delay(715);
             }else if (delay<125){
-                STEP=1;                                     //setting step pin HIGH
-                us_delay(125);                                
-                STEP=0;                                     //setting step pin LOW
-                us_delay(125);
-            }else{
-                STEP=1;                                     //setting step pin HIGH
-                us_delay(delay);                                
-                STEP=0;                                     //setting step pin LOW
-                us_delay(delay);
-                cyclenum++;
+                delay=125;
             }
+            STEP=1;                                     //setting step pin HIGH
+            us_delay(delay);                                
+            STEP=0;                                     //setting step pin LOW
+            us_delay(delay);
         }
     }
-
+    lastDIR=DIR;
 }
 
 void step_degree(unsigned long speed, int degree){      //make the motor run a set number of degrees, you can decide speed, direction and degrees
-    
-    static int cyclenum = 0;
+    int cyclenum = 0;
     
     
     int oMS1=MS1;                                       //creating and putting old ms values in a memory
@@ -376,6 +375,9 @@ void step_degree(unsigned long speed, int degree){      //make the motor run a s
 	    DIR=1;
 	    degree=-degree; 
 	}
+    if(lastDIR!=DIR){
+        __delay_ms(1);
+    }
     
     unsigned long delay;
     delay=4294967296-((speed*4294967295)/100);          //putting speed value in proportion
@@ -384,29 +386,26 @@ void step_degree(unsigned long speed, int degree){      //make the motor run a s
 
     if(speed!=0){
         for(numstep=numstep;numstep>0;numstep--){
+            cyclenum++;
             if(delay<715&&cyclenum<=15){                 
-                STEP=1;                                 //setting step pin HIGH
+                STEP=1;                                     //setting step pin HIGH
                 us_delay(715);                                
-                STEP=0;                                 //setting step pin LOW
+                STEP=0;                                     //setting step pin LOW
                 us_delay(715);
             }else if (delay<125){
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(125);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(125);
-            }else{
-                STEP=1;                                 //setting step pin HIGH
-                us_delay(delay);                                
-                STEP=0;                                 //setting step pin LOW
-                us_delay(delay);
-                cyclenum++;
+                delay=125;
+            }
+            STEP=1;                                     //setting step pin HIGH
+            us_delay(delay);                                
+            STEP=0;                                     //setting step pin LOW
+            us_delay(delay);
             }
         }
     }
-    }else{};
+    
 
     MS1=oMS1;                                           //putting back the old ms values on the pins
     MS2=oMS2;
     MS3=oMS3;
-
+    lastDIR=DIR;
 }
