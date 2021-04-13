@@ -9,7 +9,6 @@
 
 #define DIR LATBbits.LATB6              //defining DIR pin
 #define STEP LATBbits.LATB5             //defining STEP pin
-
 #endif
 
 int steprev=200;
