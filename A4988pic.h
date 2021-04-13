@@ -2,7 +2,6 @@
 #define A4988pic_h
 
 #include "A4988pic.c"   //includes library's source file
-
 #endif
 
 void us_delay(unsigned long us);                            //delay using a variable
