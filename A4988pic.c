@@ -14,7 +14,7 @@
 int steprev=200;
 static bool lastDIR;
 
-void us_delay(unsigned long us){    //delay using a variable
+void us_delay(unsigned long us){    //delay using a variable (default delay did not consent that)
     for(us=us;us>0;us--){           //for cycle for the selected lenght
         __delay_us(1);              //delay of 1 us repeated for the selected times
     }
@@ -23,31 +23,36 @@ void us_delay(unsigned long us){    //delay using a variable
 void step_setres(unsigned char ms){ //setting step lenght using ms pins
     //   if not connected is set by default to 0 0 0
     switch(ms){                     //switch construct using ms viriable     
-        case 1:                     //case ms=1
+        case 1:                     //case ms=1 or ms=200
+        case 200:    
             MS1=0;                  //setting ms pins to full res
             MS2=0;
             MS3=0;
 	    steprev=200;
             break;
-        case 2:                     //case ms=2
+        case 2:                     //case ms=2 or ms=400
+        case 400:    
             MS1=1;                  //setting ms pins to half res
             MS2=0;
             MS3=0;
 	    steprev=400;
             break;
-        case 4:                     //case ms=4
+        case 4:                     //case ms=4 or ms=800
+        case 800:    
             MS1=0;                  //setting ms pins to a quarter of full res
             MS2=1;
             MS3=0;
 	    steprev=800;
             break;
-        case 8:                     //case ms=8
+        case 8:                     //case ms=8 or ms=1600
+        case 1600:                  
             MS1=1;                  //setting ms pins to a eighth of full res
             MS2=1;
             MS3=0;
 	    steprev=1600;
             break;
-        case 16:                    //case ms=16
+        case 16:                    //case ms=16 or ms=3200
+        case 3200:    
             MS1=1;                  //setting ms pins to a sixteenth of full res
             MS2=1;
             MS3=1;
@@ -358,8 +363,7 @@ void step_n_rev(unsigned long speed, char d, int numrev){   //make the motor do 
 
 void step_degree(unsigned long speed, int degree){      //make the motor run a set number of degrees, you can decide speed, direction and degrees
     int cyclenum = 0;
-    
-    
+        
     int oMS1=MS1;                                       //creating and putting old ms values in a memory
     int oMS2=MS2;
     int oMS3=MS3;

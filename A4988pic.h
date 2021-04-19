@@ -1,10 +1,10 @@
-#ifndef A4988pic_h      //prevent from problems created by including 2 times the library
+#ifndef A4988pic_h      //prevent from problems caused by including 2 times the library
 #define A4988pic_h
 
 #include "A4988pic.c"   //includes library's source file
 #endif
 
-void us_delay(unsigned long us);                            //delay using a variable
+void us_delay(unsigned long us);                            //delay using a variable (default delay did not consent that)
 void step_setres(unsigned char ms);                         //setting step lenght using ms pins
 void step_go(unsigned char speed, char dir);                //run the motor setting speed and direction
 void step_go_num(unsigned long speed, char d, int numstep); //run the motor setting speed, direction and revolution numbers
