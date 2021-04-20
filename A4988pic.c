@@ -30,7 +30,7 @@ void us_delay(unsigned long us){    //delay using a variable (default delay did 
     }
 }
 
-void step_init(void){     //enable the drivers and setting default values for the correct working of the program
+void step_initialize(void){     //enable the drivers and setting default values for the correct working of the program
     ENABLE = 0;
     SLEEP1 = 1;
     SLEEP2 = 1;
@@ -52,36 +52,41 @@ void step_stop(void){       //disable the drivers
     ENABLE = 1;
 }
 
-void step(char motornum, unsigned long speed){      //doing a single step by a preset direction (used inside all other functions)
+void step(char motornum, unsigned long speed, int cyclenum){      //doing a single step by a preset direction (used inside all other functions)
     if(motornum==1){
         SLEEP1=0;
-    if(speed!=0){                                       //checking if speed isn't 0
-        unsigned long delay;                
-        delay=4294967296-((speed*4294967295)/100);      //putting speed value in proportion
-        if (delay<125){
-            delay=125;
-        }
-        STEP1=1;                                     //setting step pin HIGH
-        us_delay(delay);                                
-        STEP1=0;                                     //setting step pin LOW
-        us_delay(delay);
+        if(speed!=0){                                       //checking if speed isn't 0
+            unsigned long delay;                
+            delay=4294967296-((speed*4294967295)/100);    //putting speed value in proportion
+            if(delay<715&&cyclenum<=15){
+                delay=715;
+            }
+            else if (delay<125){
+                delay=125;
+            }
+            STEP1=1;                                     //setting step pin HIGH
+            us_delay(delay);                                
+            STEP1=0;                                     //setting step pin LOW
+            us_delay(delay);
         
-    }
+        }
+        SLEEP1=1;
     }
     if(motornum==2){
         SLEEP2=0;
         if(speed!=0){                                       //checking if speed isn't 0
-        unsigned long delay;                
-        delay=4294967296-((speed*4294967295)/100);      //putting speed value in proportion
-        if (delay<125){
-            delay=125;
-        }
-        STEP2=1;                                     //setting step pin HIGH
-        us_delay(delay);                                
-        STEP2=0;                                     //setting step pin LOW
-        us_delay(delay);
+            unsigned long delay;                
+            delay=4294967296-((speed*4294967295)/100);      //putting speed value in proportion
+            if (delay<125){
+                delay=125;
+            }
+            STEP2=1;                                     //setting step pin HIGH
+            us_delay(delay);                                
+            STEP2=0;                                     //setting step pin LOW
+            us_delay(delay);
         
-    }
+        }
+        SLEEP2=1;
     }
 }
 
@@ -124,7 +129,7 @@ void step_dir(char motornum, char d){       //setting step dir (used inside all 
     if(lastDIR2!=DIR2){
         __delay_ms(1);
     }
-        lastDIR2=DIR2;
+    lastDIR2=DIR2;
     }
 }
 
@@ -175,9 +180,10 @@ void step_setres(int ms){     //setting step lenght using ms pins
     }
 }
 
-void step_go(char motornum, unsigned long speed, char d){              //run the motor setting speed and direction
+void step_go(char motornum, unsigned long speed, char d){            //run the motor setting speed and direction
+    int cyclenum=16;
     step_dir(motornum, d);
-    step(motornum, speed);
+    step(motornum, speed, cyclenum);
 }
 
 void step_go_num(char motornum, unsigned long speed, char d, int numstep){ //run the motor setting speed, direction and revolution numbers
@@ -185,7 +191,7 @@ void step_go_num(char motornum, unsigned long speed, char d, int numstep){ //run
     int cyclenum = 0;
     for(numstep=numstep;numstep>0;numstep--){
             cyclenum++;
-            step(motornum, speed);
+            step(motornum, speed, cyclenum);
     }  
 }
 
@@ -196,22 +202,10 @@ void step_go_adcspeed(char motornum, char d, int numstep){             //run the
     if(ADCON0!=0){
         unsigned long delay;
         for(numstep=numstep;numstep>0;numstep--){
-            delay=4294967296-((ADCON0*4294967295)/256); //putting speed value in proportion
             cyclenum++;
-            if(delay<715&&cyclenum<=15){                 
-                STEP1=1;                                     //setting step pin HIGH
-                us_delay(715);                                
-                STEP1=0;                                     //setting step pin LOW
-                us_delay(715);
-            }else if (delay<125){
-                delay=125;
-            }
-            STEP1=1;                                     //setting step pin HIGH
-            us_delay(delay);                                
-            STEP1=0;                                     //setting step pin LOW
-            us_delay(delay);
-            }
+            step(motornum, ADCON0 , cyclenum);
         }
+    }
 }
 
 void step_one_rev(char motornum, unsigned long speed, char d){         //make the motor do a revolution, you can decide speed and direction
@@ -220,11 +214,9 @@ void step_one_rev(char motornum, unsigned long speed, char d){         //make th
     int numstep;
     for(numstep=steprev;numstep>0;numstep--){
             cyclenum++;
-            step(motornum, speed);
+            step(motornum, speed, cyclenum);
     } 
-    
-   
-    }
+}
 
 void step_half_rev(char motornum, unsigned long speed, char d){        //make the motor do an half revolution, you can decide speed and direction
     step_dir(motornum, d);
@@ -232,7 +224,7 @@ void step_half_rev(char motornum, unsigned long speed, char d){        //make th
     int numstep;
     for(numstep=steprev/2;numstep>0;numstep--){
             cyclenum++;
-            step(motornum, speed);
+            step(motornum, speed, cyclenum);
     }
 }
 
@@ -242,7 +234,7 @@ void step_quarter_rev(char motornum, unsigned long speed, char d){     //make th
     int numstep;
     for(numstep=steprev/4;numstep>0;numstep--){
             cyclenum++;
-            step(motornum, speed);
+            step(motornum, speed, cyclenum);
     }
 }
 
@@ -252,7 +244,7 @@ void step_n_rev(char motornum, unsigned long speed, char d, int numrev){   //mak
     int numstep;
     for(numstep=numrev*steprev;numstep>0;numstep--){
             cyclenum++;
-            step(motornum, speed);
+            step(motornum, speed, cyclenum);
     }
 }
 
@@ -267,84 +259,50 @@ void step_degree(char motornum, unsigned long speed, int degree){      //make th
     MS2=1;
     MS3=1;
     if(motornum==1){
-        SLEEP1 = 0;
-    if(0!=degree){
-    if(degree>0){                                       //defining the rotation direction
-	    DIR1=0;
-    }else{
-	    DIR1=1;
-	    degree=-degree; 
-	}
-    if(lastDIR1!=DIR1){
-        __delay_ms(1);
-    }
-    
-    unsigned long delay;
-    delay=4294967296-((speed*4294967295)/100);          //putting speed value in proportion
-
-    int numstep=degree/0.1125;                          //putting in proportion degree value
-
-    if(speed!=0){
-        for(numstep=numstep;numstep>0;numstep--){
-            cyclenum++;
-            if(delay<715&&cyclenum<=15){                 
-                STEP1=1;                                     //setting step pin HIGH
-                us_delay(715);                                
-                STEP1=0;                                     //setting step pin LOW
-                us_delay(715);
-            }else if (delay<125){
-                delay=125;
-            }
-            STEP1=1;                                     //setting step pin HIGH
-            us_delay(delay);                                
-            STEP1=0;                                     //setting step pin LOW
-            us_delay(delay);
-            }
-        }
-    }
-    }
-    if(motornum==2)
-        {
-        SLEEP2 = 0;
         if(0!=degree){
-        if(degree>0){                                       //defining the rotation direction
-	    DIR2=0;
-        }else{
-	    DIR2=1;
-            degree=-degree; 
-          }
-        if(lastDIR2!=DIR2){
-            __delay_ms(1);
-        }
-    
-        unsigned long delay;
-        delay=4294967296-((speed*4294967295)/100);          //putting speed value in proportion
-
-        int numstep=degree/0.1125;                          //putting in proportion degree value
-
-        if(speed!=0){
+            if(degree>0){                                       //defining the rotation direction
+                DIR1=0;
+            }else{
+                DIR1=1;
+                degree=-degree; 
+            }
+            if(lastDIR1!=DIR1){
+                __delay_ms(1);
+            }
+            lastDIR1=DIR1;
+            
+            int numstep=degree/0.1125;
+        
             for(numstep=numstep;numstep>0;numstep--){
                 cyclenum++;
-                if(delay<715&&cyclenum<=15){                 
-                    STEP2=1;                                     //setting step pin HIGH
-                    us_delay(715);                                
-                    STEP2=0;                                     //setting step pin LOW
-                    us_delay(715);
-                }else if (delay<125){
-                    delay=125;
-                }
-                STEP2=1;                                     //setting step pin HIGH
-                us_delay(delay);                                
-                STEP2=0;                                     //setting step pin LOW
-                us_delay(delay);
-            }
-        }
+                step(motornum, speed, cyclenum);
+            }   
+        }   
     }
+    if(motornum==2){
+        if(0!=degree){
+            if(degree>0){                                       //defining the rotation direction
+                DIR2=0;
+            }else{
+                DIR2=1;
+                degree=-degree; 
+            }
+            if(lastDIR2!=DIR2){
+                __delay_ms(1);
+            }
+            lastDIR2=DIR2;
+            
+            int numstep=degree/0.1125;
+        
+            for(numstep=numstep;numstep>0;numstep--){
+                cyclenum++;
+                step(motornum, speed, cyclenum);
+            }   
+        }   
     }
     
-
     MS1=oMS1;                                           //putting back the old ms values on the pins
     MS2=oMS2;
-    MS3=oMS3;
-    lastDIR1=DIR1;
+    MS3=oMS3;   
 }
+

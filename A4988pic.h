@@ -1,4 +1,3 @@
-
 /*
  * library written by Enrico Maraldi and Andrea D'agostino, a.s. 20/21
  * 
@@ -29,15 +28,15 @@
 #define A4988pic_h
 
 
-#endif
+
 
 //functions prototypes
 
 extern void us_delay(unsigned long us);                            //delay using a variable (default delay did not allow that)
-extern void step_init(void);                                           //enable the drivers and setting default values for the correct working of the program
+extern void step_initialize(void);                                           //enable the drivers and setting default values for the correct working of the program
 extern void step_sleep(char motornum);                             //puts the selected motor on sleep, 0=both motors, 1=motor1, 2=motor2
 extern void step_stop(void);                                           //disable the drivers
-extern void step(char motornum, unsigned long speed);              //doing a single step by a preset direction (used inside all other functions)
+extern void step(char motornum, unsigned long speed, int cyclenum);              //doing a single step by a preset direction (used inside all other functions)
 extern void step_dir(char motornum, char d);                       //setting step dir (used inside all other functions)
 extern void step_setres(int ms);                         //setting step lenght using ms pins
 extern void step_go(char motornum, unsigned long speed, char d);                //run the motor setting speed and direction
@@ -47,4 +46,6 @@ extern void step_one_rev(char motornum, unsigned long speed, char d);           
 extern void step_half_rev(char motornum, unsigned long speed, char d);            //make the motor do an half revolution, you can decide speed and direction
 extern void step_quarter_rev(char motornum, unsigned long speed, char d);         //make the motor do a quarter of revolution, you can decide speed and direction
 extern void step_n_rev(char motornum, unsigned long speed, char d, int numrev);   //make the motor do a noumber of completes revolution, you can decide speed, number and direction
-extern void step_degree(char motornum, unsigned long speed, int degree);          //make the motor run a set number of degrees, you can decide speed, direction and degrees
+extern void step_degree(char motornum, unsigned long speed, int degree);  //make the motor run a set number of degrees, you can decide speed, direction and degrees
+
+#endif
