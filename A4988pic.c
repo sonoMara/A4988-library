@@ -1,4 +1,4 @@
-#ifndef A4988pic_c      //prevent from problems created by including 2 times the library
+#ifndef A4988pic_c      //prevent from problems caused by including 2 times the same library
 #define A4988pic_c
 
 #include "mcc_generated_files/mcc.h"
@@ -19,7 +19,8 @@
 #define STEP2 LATBbits.LATB7            //defining STEP pin of second motor
 #define SLEEP2 LATAbits.LATA2           //defining SLEEP pin of second motor
 
-#endif
+
+
 int steprev=200;
 static bool lastDIR1;
 static bool lastDIR2;
@@ -306,3 +307,4 @@ void step_degree(char motornum, unsigned long speed, int degree){      //make th
     MS3=oMS3;   
 }
 
+#endif
