@@ -7,9 +7,9 @@
  * 
  *                      |-------------------|
  *           		|		    |
- *      SLEEP2	RA2	|1		        18|RA1    SLEEP1
- *              RA3	|2		        17|RA0    ENABLE
- *              RA4	|3		        16|RA7
+ *      SLEEP2	RA2	|1        18|RA1    SLEEP1
+ *              RA3	|2        17|RA0    ENABLE
+ *              RA4	|3        16|RA7
  *              MCLR    |4                15|RA6
  *              VSS	|5   pic16f18xx	  14|VDD
  *              RB0	|6				        13|RB7    STEP2
