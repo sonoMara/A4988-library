@@ -5,8 +5,8 @@
  * 	
  * default pin configuration(you can change every pin at the start of .c file)
  * 
- *                  |-------------------|
- *           		    |					          |
+ *                      |-------------------|
+ *           		  |					          |
  *      SLEEP2	RA2	|1				        18|RA1    SLEEP1
  *              RA3	|2				        17|RA0    ENABLE
  *              RA4	|3				        16|RA7
