@@ -44,7 +44,7 @@ void step_sleep(char motornum){     //puts the selected motor on sleep, 0=both m
         SLEEP1 = 1;
     if(motornum==2)
         SLEEP2 = 1;
-    if(motornum==3)
+    if(motornum==0)
         SLEEP1 = 1;
         SLEEP2 = 1;
 }
@@ -58,11 +58,11 @@ void step(char motornum, unsigned long speed, int cyclenum){      //doing a sing
         SLEEP1=0;
         if(speed!=0){                                       //checking if speed isn't 0
             unsigned long delay;                
-            delay=4294967296-((speed*4294967295)/100);    //putting speed value in proportion
-            if(delay<715&&cyclenum<=15){
-                delay=715;
+            delay=(1000000-(speed*1000));    //putting speed value in proportion
+            if(delay<715&&cyclenum<=8){
+                delay=(715-((cyclenum-1)*delay/7));
             }
-            else if (delay<125){
+            if (delay<125){
                 delay=125;
             }
             STEP1=1;                                     //setting step pin HIGH
@@ -77,7 +77,10 @@ void step(char motornum, unsigned long speed, int cyclenum){      //doing a sing
         SLEEP2=0;
         if(speed!=0){                                       //checking if speed isn't 0
             unsigned long delay;                
-            delay=4294967296-((speed*4294967295)/100);      //putting speed value in proportion
+            delay=(1000000-(speed*1000));    //putting speed value in proportion
+            if(delay<715&&cyclenum<=8){
+                delay=(715-((cyclenum-1)*delay/7));
+            }
             if (delay<125){
                 delay=125;
             }

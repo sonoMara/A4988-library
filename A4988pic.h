@@ -5,38 +5,38 @@
  * 	
  * default pin configuration(you can change every pin at the start of .c file)
  * 
- *                      |-------------------|
- *           		|		    |
- *      SLEEP2	RA2	|1                18|RA1    SLEEP1
- *              RA3	|2                17|RA0    ENABLE
- *              RA4	|3                16|RA7
- *              MCLR    |4                15|RA6
- *              VSS	|5   pic16f18xx	  14|VDD
- *              RB0	|6		  13|RB7    STEP2
- *          MS1   RB1   |7		  12|RB6    DIR2
- *          MS2   RB2   |8		  11|RB5    STEP1
- *          MS3   RB3   |9		  10|RB4    DIR1
- *           		|		    |
+ *               		|-------------------|
+ *           			|					|
+ *          SLEEP2	RA2	|1				  18|RA1    SLEEP1
+ *              	RA3	|2				  17|RA0    ENABLE
+ *                  RA4	|3				  16|RA7
+ *                	MCLR|4                15|RA6
+ *                	VSS	|5   pic16f18xx	  14|VDD
+ *                  RB0	|6				  13|RB7    STEP2
+ *          MS1		RB1	|7				  12|RB6    DIR2
+ *          MS2		RB2	|8				  11|RB5    STEP1
+ *          MS3		RB3	|9				  10|RB4    DIR1
+ *                  	|					|
  *                      |-------------------|
  * 
  * Libreria scritta da Enrico Maraldi and Andrea D'agostino, a.s. 20/21
  * 
- * questa libreria puÃ² controllare 2 driver A4988 per motori passo passo
+ * questa libreria può controllare 2 driver A4988 per motori passo passo
  * 	
  * configurazione pin di default (sono completamente personalizzabili all'inizio del file .c)
  * 
- *                      |-------------------|
- *           		|		    |
- *      SLEEP2	RA2	|1                18|RA1    SLEEP1
- *              RA3	|2                17|RA0    ENABLE
- *              RA4	|3                16|RA7
- *              MCLR    |4                15|RA6
- *              VSS	|5   pic16f18xx	  14|VDD
- *              RB0	|6		  13|RB7    STEP2
- *          MS1   RB1   |7		  12|RB6    DIR2
- *          MS2   RB2   |8		  11|RB5    STEP1
- *          MS3   RB3   |9		  10|RB4    DIR1
- *           		|		    |
+ *               		|-------------------|
+ *           			|					|
+ *          SLEEP2	RA2	|1				  18|RA1    SLEEP1
+ *              	RA3	|2				  17|RA0    ENABLE
+ *                  RA4	|3				  16|RA7
+ *                	MCLR|4                15|RA6
+ *                	VSS	|5   pic16f18xx	  14|VDD
+ *                  RB0	|6				  13|RB7    STEP2
+ *          MS1		RB1	|7				  12|RB6    DIR2
+ *          MS2		RB2	|8				  11|RB5    STEP1
+ *          MS3		RB3	|9				  10|RB4    DIR1
+ *                  	|					|
  *                      |-------------------|
  * 
  * 
