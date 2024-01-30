@@ -1,4 +1,4 @@
- Library written by Enrico Maraldi and Andrea D'agostino, a.s. 20/21
+ Library written by Enrico Maraldi and Andrea D'agostino, s.y. 20/21
  
  This library can control 2 A4988 drivers for stepper motor
  
